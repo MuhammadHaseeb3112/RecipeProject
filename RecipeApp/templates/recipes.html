@@ -1,0 +1,166 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}All Recipes{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+
+  <!-- Hero Header -->
+  <div class="text-center mb-5">
+    <h1 class="fw-bold display-5 text-success">🍴 Explore Delicious Recipes</h1>
+    <p class="text-muted lead">Browse all recipes, search your favorite, or filter by popularity & freshness.</p>
+  </div>
+
+  <!-- Search Bar -->
+  <form method="get" class="mb-5">
+    <div class="input-group input-group-lg shadow-sm">
+      <input type="text" name="q" class="form-control rounded-start"
+             placeholder="Search recipes..." value="{{ request.GET.q }}">
+      <button class="btn btn-success rounded-end">🔍 Search</button>
+    </div>
+  </form>
+
+  <!-- Category + Filter Section -->
+  <div class="card shadow-sm border-0 mb-5 bg-light">
+    <div class="card-body">
+      <h4 class="mb-4 text-center fw-bold text-success">📂 Browse by Category</h4>
+
+      <div class="d-flex flex-wrap justify-content-center gap-2">
+
+        <!-- All Recipes -->
+        <a href="{% url 'recipes' %}" 
+           class="btn btn-outline-success px-4 py-2 rounded-pill {% if not request.GET.category %}active{% endif %}">
+           🍴 All Recipes
+        </a>
+
+        <!-- Parent Categories + Hover Children -->
+        {% for parent in categories %}
+          <div class="category-hover">
+            <a href="{% url 'recipes' %}?category={{ parent.id }}"
+               class="btn btn-outline-success px-4 py-2 rounded-pill {% if request.GET.category == parent.id|stringformat:"s" %}active{% endif %}">
+              {{ parent.name }}
+            </a>
+            {% if parent.children.all %}
+              <div class="category-children shadow-sm border rounded-3">
+                {% for child in parent.children.all %}
+                  <a href="{% url 'recipes' %}?category={{ child.id }}"
+                     class="dropdown-item {% if request.GET.category == child.id|stringformat:"s" %}active{% endif %}">
+                    {{ child.name }}
+                  </a>
+                {% endfor %}
+              </div>
+            {% endif %}
+          </div>
+        {% endfor %}
+
+        <!-- Sort Filter -->
+        <div class="dropdown">
+          <button class="btn btn-outline-success px-4 py-2 rounded-pill dropdown-toggle" type="button" data-bs-toggle="dropdown">
+            🔽 Sort By
+          </button>
+          <ul class="dropdown-menu shadow-sm border-0 rounded-3">
+            <li>
+              <a class="dropdown-item {% if request.GET.filter == 'recent' %}active{% endif %}" 
+                 href="?filter=recent{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}">
+                 🕒 Recent
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item {% if request.GET.filter == 'popular' %}active{% endif %}" 
+                 href="?filter=popular{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}">
+                 ⭐ Popular
+              </a>
+            </li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Recipe Grid -->
+  <div class="row g-4">
+    {% for recipe in recipes %}
+      <div class="col-md-4">
+        <div class="card recipe-card shadow-sm h-100 border-0 rounded-4 overflow-hidden">
+          {% if recipe.image %}
+            <img src="{{ recipe.image.url }}" class="card-img-top recipe-img" alt="{{ recipe.title }}">
+          {% endif %}
+          <div class="card-body text-center">
+            <h5 class="card-title fw-bold text-dark">{{ recipe.title }}</h5>
+            <p class="card-text text-muted small">{{ recipe.short_description|truncatechars:100 }}</p>
+            <a href="{% url 'recipe_detail' recipe.id %}" class="btn btn-sm btn-success rounded-pill">View Recipe</a>
+          </div>
+        </div>
+      </div>
+    {% empty %}
+      <div class="col-12 text-center">
+        <div class="alert alert-info">No recipes found. Try another category or filter.</div>
+      </div>
+    {% endfor %}
+  </div>
+
+</div>
+
+<style>
+/* Hover Category Menu */
+.category-hover {
+  position: relative;
+  display: inline-block;
+}
+.category-children {
+  display: none;
+  position: absolute;
+  top: 110%;
+  left: 0;
+  min-width: 180px;
+  background-color: #f8fdf8;
+  z-index: 1000;
+  padding: 6px 0;
+}
+.category-hover:hover .category-children {
+  display: block;
+}
+.category-children a {
+  display: block;
+  padding: 8px 14px;
+  color: #198754;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+.category-children a:hover,
+.category-children a.active {
+  background-color: #198754;
+  color: #fff !important;
+  border-radius: 5px;
+}
+
+/* Recipe Card Hover */
+.recipe-card {
+  transition: all 0.3s ease;
+}
+.recipe-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+.recipe-img {
+  height: 220px;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+.recipe-card:hover .recipe-img {
+  transform: scale(1.05);
+}
+
+/* Dropdown Styling */
+.dropdown-menu {
+  background-color: #f8fdf8;
+}
+.dropdown-item.active,
+.dropdown-item:active {
+  background-color: #198754 !important;
+  color: #fff !important;
+}
+</style>
+{% endblock %}

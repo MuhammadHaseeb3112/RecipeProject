@@ -1,0 +1,214 @@
+{% extends 'base.html' %}
+{% block title %}Home{% endblock %}
+{% block content %}
+
+<style>
+/* 🔥 FIXED CARD UI */
+.recipe-card {
+  border-radius: 16px;
+  overflow: hidden;
+  transition: 0.3s ease;
+  height: 100%;
+}
+
+.recipe-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+/* ✅ FIX IMAGE SIZE */
+.card-img-wrapper {
+  height: 200px;
+  overflow: hidden;
+}
+
+.card-img-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Clean spacing */
+.card-body {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Badges */
+.badge-new {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: #198754;
+  color: #fff;
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: 20px;
+}
+
+.badge-trending {
+  background: #dc3545;
+  color: #fff;
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: 20px;
+}
+
+.badge-category {
+  background: #e8f9f1;
+  color: #198754;
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  width: fit-content;
+}
+
+.stats {
+  font-size: 13px;
+  color: #6c757d;
+  display: flex;
+  justify-content: space-between;
+}
+</style>
+
+<!-- HERO -->
+
+<div class="container mb-5">
+  <div class="text-center p-5 bg-light rounded shadow-sm">
+    <h1 class="fw-bold">🍴 Discover Amazing Recipes</h1>
+    <p class="text-muted">Cook smarter, eat better 🍲</p>
+
+
+{% if not user.is_authenticated %}
+<a href="{% url 'signup' %}" class="btn btn-success rounded-pill px-4">Get Started</a>
+{% endif %}
+
+  </div>
+</div>
+
+<!-- 🆕 RECENT -->
+
+<div class="container mb-5">
+  <h4 class="fw-bold mb-3">🆕 Fresh Recipes</h4>
+
+  <div class="row g-4">
+    {% for recipe in recent_recipes %}
+    <div class="col-md-6 col-lg-4">
+      <div class="card recipe-card shadow-sm">
+
+
+    <div class="card-img-wrapper position-relative">
+      <img src="{{ recipe.image.url|default:'https://via.placeholder.com/400x200' }}">
+
+      {% if recipe.created_at|timesince|slice:":1" == "0" %}
+      <span class="badge-new">New</span>
+      {% endif %}
+    </div>
+
+    <div class="card-body">
+      <span class="badge-category mb-2">{{ recipe.category }}</span>
+      <h6 class="fw-bold">{{ recipe.title }}</h6>
+
+      <p class="text-muted small">
+        {{ recipe.short_description|truncatewords:15 }}
+      </p>
+
+      <a href="{% url 'recipe_detail' recipe.id %}" class="btn btn-success w-100 mt-auto rounded-pill">
+        View Recipe
+      </a>
+    </div>
+
+  </div>
+</div>
+{% endfor %}
+
+
+  </div>
+</div>
+
+<!-- 🔥 TRENDING -->
+
+<div class="container mb-5">
+  <h4 class="fw-bold mb-3">🔥 Trending</h4>
+
+  <div class="row g-4">
+    {% for recipe in popular_recipes %}
+    <div class="col-md-6 col-lg-4">
+      <div class="card recipe-card shadow-sm">
+
+
+    <div class="card-img-wrapper">
+      <img src="{{ recipe.image.url|default:'https://via.placeholder.com/400x200' }}">
+    </div>
+
+    <div class="card-body">
+
+      {% if recipe.score > 80 %}
+      <span class="badge-trending mb-2">🔥 Hot</span>
+      {% elif recipe.score > 50 %}
+      <span class="badge-trending mb-2">⭐ Trending</span>
+      {% endif %}
+
+      <span class="badge-category mb-2">{{ recipe.category }}</span>
+
+      <h6 class="fw-bold">{{ recipe.title }}</h6>
+
+      <div class="stats mb-2">
+        <span>👁 {{ recipe.views }}</span>
+        <span>❤️ {{ recipe.favorited_by.count }}</span>
+        <span>⭐ {{ recipe.average_rating|floatformat:1 }}</span>
+      </div>
+
+      <a href="{% url 'recipe_detail' recipe.id %}" class="btn btn-success w-100 rounded-pill">
+        View Recipe
+      </a>
+    </div>
+
+  </div>
+</div>
+{% endfor %}
+
+
+  </div>
+</div>
+
+<!-- 🏆 TOP TODAY -->
+
+<div class="container mb-5">
+  <h4 class="fw-bold mb-3">🏆 Top Today</h4>
+
+  <div class="row g-4">
+    {% for recipe in top_today %}
+    <div class="col-md-6 col-lg-4">
+      <div class="card recipe-card shadow-sm">
+
+
+    <div class="card-img-wrapper">
+      <img src="{{ recipe.image.url|default:'https://via.placeholder.com/400x200' }}">
+    </div>
+
+    <div class="card-body">
+      <span class="badge bg-dark mb-2">#{{ forloop.counter }}</span>
+
+      <h6 class="fw-bold">{{ recipe.title }}</h6>
+
+      <div class="stats mb-2">
+        <span>👁 {{ recipe.views }}</span>
+        <span>❤️ {{ recipe.favorited_by.count }}</span>
+        <span>⭐ {{ recipe.average_rating|floatformat:1 }}</span>
+      </div>
+
+      <a href="{% url 'recipe_detail' recipe.id %}" class="btn btn-success w-100 rounded-pill">
+        View
+      </a>
+    </div>
+
+  </div>
+</div>
+{% endfor %}
+
+
+  </div>
+</div>
+
+{% endblock %}

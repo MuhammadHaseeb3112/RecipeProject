@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+{% block title %}My Profile{% endblock %}
+
+{% block content %}
+
+<div class="container py-5">
+
+  <!-- HEADER -->
+
+  <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4">
+    <h2 class="fw-bold">👤 My Profile</h2>
+  </div>
+
+  <!-- PROFILE CARD -->
+
+  <div class="card shadow-sm border-0 p-4 rounded-4 mb-4">
+    <div class="row g-3 align-items-center">
+      <div class="col-md-8">
+        <p class="mb-1"><strong>Username:</strong> {{ user.username }}</p>
+        <p class="mb-1"><strong>Email:</strong> {{ user.email }}</p>
+        <p class="mb-0"><strong>Joined:</strong> {{ user.date_joined|date:"F j, Y" }}</p>
+      </div>
+
+  <div class="col-md-4 text-md-end mt-3 mt-md-0">
+    <a href="{% url 'password_change' %}" class="btn btn-outline-dark rounded-pill me-2 mb-2">
+      🔐 Change Password
+    </a>
+
+    <form method="POST" action="{% url 'logout' %}" class="d-inline">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-danger rounded-pill mb-2">
+        🚪 Logout
+      </button>
+    </form>
+  </div>
+</div>
+
+  </div>
+
+  <!-- STATS -->
+
+  <div class="row g-3 mb-4 text-center">
+    <div class="col-md-4">
+      <div class="card shadow-sm border-0 p-3 rounded-4">
+        <h4 class="fw-bold text-success">{{ user.recipes.count }}</h4>
+        <small class="text-muted">Recipes Created</small>
+      </div>
+    </div>
+
+<div class="col-md-4">
+  <div class="card shadow-sm border-0 p-3 rounded-4">
+    <h4 class="fw-bold text-danger">{{ favorites|length }}</h4>
+    <small class="text-muted">Saved Recipes ❤️</small>
+  </div>
+</div>
+
+<div class="col-md-4">
+  <div class="card shadow-sm border-0 p-3 rounded-4">
+    <h4 class="fw-bold text-warning">{{ user.rating_set.count }}</h4>
+    <small class="text-muted">Reviews Given ⭐</small>
+  </div>
+</div>
+
+  </div>
+
+  <!-- SAVED RECIPES -->
+
+  <div class="mb-4">
+    <h4 class="fw-bold mb-3">❤️ Saved Recipes</h4>
+
+
+<div class="row g-3">
+  {% for fav in favorites %}
+    <div class="col-md-4">
+      <div class="card shadow-sm border-0 rounded-4 h-100">
+
+        {% if fav.recipe.image %}
+          <img src="{{ fav.recipe.image.url }}" class="card-img-top" style="height:200px; object-fit:cover;">
+        {% else %}
+          <img src="https://via.placeholder.com/400x200?text=No+Image" class="card-img-top">
+        {% endif %}
+
+        <div class="card-body d-flex flex-column">
+          <h6 class="fw-bold">{{ fav.recipe.title }}</h6>
+
+          <small class="text-muted mb-2">
+            👁 {{ fav.recipe.views }} views
+          </small>
+
+          <a href="{% url 'recipe_detail' fav.recipe.id %}"
+             class="btn btn-success btn-sm mt-auto rounded-pill">
+            View Recipe
+          </a>
+        </div>
+
+      </div>
+    </div>
+  {% empty %}
+    <p class="text-muted">You haven't saved any recipes yet.</p>
+  {% endfor %}
+</div>
+
+
+  </div>
+
+</div>
+
+<style>
+.card:hover {
+  transform: translateY(-4px);
+  transition: 0.2s;
+}
+</style>
+
+{% endblock %}
