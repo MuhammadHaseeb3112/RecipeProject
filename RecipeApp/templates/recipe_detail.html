@@ -11,179 +11,184 @@
     <!-- Left Column (Image) -->
     <div class="col-lg-6">
       <div class="card shadow-lg border-0 mb-4 overflow-hidden rounded-4">
-<div class="recipe-img-wrapper">
-  <img src="{{ recipe.image.url }}" alt="{{ recipe.title }}">
-</div>      </div>
+        <div class="recipe-img-wrapper">
+          <div class="recipe-img-wrapper">
+            {% if recipe.image %}
+            <img src="{{ recipe.image.url }}" alt="{{ recipe.title }}">
+            {% else %}
+            <img src="https://placehold.co/800x500?text=Recipe+Image" alt="No Image Available">
+            {% endif %}
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- Right Column (Title + Info) -->
     <div class="col-lg-6">
-  <h2 class="fw-bold mb-3 gradient-text text-center text-lg-start">
-    {{ recipe.title }}
-  </h2>
+      <h2 class="fw-bold mb-3 gradient-text text-center text-lg-start">
+        {{ recipe.title }}
+      </h2>
 
-  <div class="card shadow-sm border-0 mb-4 p-4 rounded-4">
-    <ul class="info-list mb-0">
+      <div class="card shadow-sm border-0 mb-4 p-4 rounded-4">
+        <ul class="info-list mb-0">
 
-      <li>
-        <strong>📂 Category:</strong>
-        <span class="text-success">{{ recipe.category }}</span>
-      </li>
+          <li>
+            <strong>📂 Category:</strong>
+            <span class="text-success">{{ recipe.category }}</span>
+          </li>
 
-      <li>
-        <strong>⏱ Prep Time:</strong>
-        <span class="text-success">{{ recipe.prep_time }} min</span>
-      </li>
+          <li>
+            <strong>⏱ Prep Time:</strong>
+            <span class="text-success">{{ recipe.prep_time }} min</span>
+          </li>
 
-      {% if recipe.cook_time %}
-      <li>
-        <strong>🔥 Cook Time:</strong>
-        <span class="text-success">{{ recipe.cook_time }} min</span>
-      </li>
-      {% endif %}
+          {% if recipe.cook_time %}
+          <li>
+            <strong>🔥 Cook Time:</strong>
+            <span class="text-success">{{ recipe.cook_time }} min</span>
+          </li>
+          {% endif %}
 
-      <li>
-        <strong>⏳ Total Time:</strong>
-        <span class="text-success">{{ recipe.total_time }} min</span>
-      </li>
+          <li>
+            <strong>⏳ Total Time:</strong>
+            <span class="text-success">{{ recipe.total_time }} min</span>
+          </li>
 
-      <!-- ✅ FIXED VIEW COUNT -->
-      <li>
-        <strong>👁 Views:</strong>
-        <span class="text-success">{{ recipe.views }}</span>
-      </li>
+          <!-- ✅ FIXED VIEW COUNT -->
+          <li>
+            <strong>👁 Views:</strong>
+            <span class="text-success">{{ recipe.views }}</span>
+          </li>
 
-      <li>
-        <strong>⭐ Rating:</strong>
-        <span class="text-success">
-          {{ recipe.average_rating }}/5
-          ({{ recipe.ratings_count }} review{% if recipe.ratings_count != 1 %}s{% endif %})
-        </span>
-      </li>
+          <li>
+            <strong>⭐ Rating:</strong>
+            <span class="text-success">
+              {{ recipe.average_rating }}/5
+              ({{ recipe.ratings_count }} review{% if recipe.ratings_count != 1 %}s{% endif %})
+            </span>
+          </li>
 
-      <li>
-<!-- ❤️ FAVORITE BUTTON -->
+          <li>
+            <!-- ❤️ FAVORITE BUTTON -->
 
-<div class="text-center text-lg-start mb-3">
-  {% if user.is_authenticated %}
-  {% if is_favorited %}
-  <a href="{% url 'toggle_favorite' recipe.id %}" 
-     class="btn btn-danger rounded-pill px-4">
-    💔 Unsave
-  </a>
-{% else %}
-  <a href="{% url 'toggle_favorite' recipe.id %}" 
-     class="btn btn-outline-danger rounded-pill px-4">
-    ❤️ Save Recipe
-  </a>
-{% endif %}
+            <div class="text-center text-lg-start mb-3">
+              {% if user.is_authenticated %}
+              {% if is_favorited %}
+              <a href="{% url 'toggle_favorite' recipe.id %}" class="btn btn-danger rounded-pill px-4">
+                💔 Unsave
+              </a>
+              {% else %}
+              <a href="{% url 'toggle_favorite' recipe.id %}" class="btn btn-outline-danger rounded-pill px-4">
+                ❤️ Save Recipe
+              </a>
+              {% endif %}
 
-{% else %} <a href="{% url 'login' %}?next={{ request.path }}" 
-    class="btn btn-outline-secondary rounded-pill px-4">
-Login to save ❤️ </a>
-{% endif %}
+              {% else %} <a href="{% url 'login' %}?next={{ request.path }}"
+                class="btn btn-outline-secondary rounded-pill px-4">
+                Login to save ❤️ </a>
+              {% endif %}
 
-</div>
+            </div>
 
-      </li>
+          </li>
 
-    </ul>
-  </div>
-</div>
-    </div>
-  </div>
-
-  <!-- Ingredients & Instructions -->
-  <div class="row g-4 my-1">
-    <!-- Instructions -->
-<!-- Instructions -->
-<div class="col-lg-7">
-  <h5 class="fw-bold gradient-text mb-3">👩‍🍳 Instructions</h5>
-  {% for step in recipe.instructions|split_steps %}
-  <div class="card shadow-sm border-0 mb-3 p-3 rounded-4 d-flex align-items-start instruction-step">
-    <div class="step-text">{{ step }}</div>
-  </div>
-  {% empty %}
-  <p class="text-muted">No instructions provided.</p>
-  {% endfor %}
-</div>
-
-
-    <div class="col-lg-5">
-      <div class="card shadow-sm border-0 p-4 rounded-4">
-        <h5 class="fw-bold gradient-text mb-3">🛒 Ingredients</h5>
-        <ul class="ingredient-list mb-0">
-          {% for item in recipe.ingredients|split_ingredients %}
-          <li><span class="text-success fw-bold">•</span> {{ item }}</li>
-          {% empty %}
-          <li class="text-muted">No ingredients listed.</li>
-          {% endfor %}
         </ul>
       </div>
     </div>
   </div>
+</div>
 
-  <!-- Ratings & Reviews -->
-  <div class="row g-4 my-1">
-    <div class="col-lg-8 mx-auto">
-      <!-- Rating Form -->
-      {% if user.is_authenticated %}
-      <div class="card shadow-sm border-0 p-4 mb-4 rounded-4">
-        <form action="{% url 'submit_rating' recipe.id %}" method="post">
-          {% csrf_token %}
-          <h5 class="fw-bold gradient-text mb-3">⭐ Rate this Recipe</h5>
+<!-- Ingredients & Instructions -->
+<div class="row g-4 my-1">
+  <!-- Instructions -->
+  <!-- Instructions -->
+  <div class="col-lg-7">
+    <h5 class="fw-bold gradient-text mb-3">👩‍🍳 Instructions</h5>
+    {% for step in recipe.instructions|split_steps %}
+    <div class="card shadow-sm border-0 mb-3 p-3 rounded-4 d-flex align-items-start instruction-step">
+      <div class="step-text">{{ step }}</div>
+    </div>
+    {% empty %}
+    <p class="text-muted">No instructions provided.</p>
+    {% endfor %}
+  </div>
 
-          <div class="mb-3">
-            {% for i in 1|to:5 %}
-            <i class="bi bi-star rating-star {% if user_rating and user_rating.rating >= i %}active{% endif %}"
-              data-value="{{ i }}"></i>
-            {% endfor %}
-          </div>
-          <input type="hidden" name="score" id="ratingScore"
-            value="{% if user_rating %}{{ user_rating.rating }}{% endif %}">
 
-          <div class="mb-3">
-            <label class="form-label fw-semibold">💬 Comment:</label>
-            <textarea name="comment" rows="3" class="form-control rounded-3"
-              placeholder="Write your review...">{% if user_rating %}{{ user_rating.comment }}{% endif %}</textarea>
-          </div>
+  <div class="col-lg-5">
+    <div class="card shadow-sm border-0 p-4 rounded-4">
+      <h5 class="fw-bold gradient-text mb-3">🛒 Ingredients</h5>
+      <ul class="ingredient-list mb-0">
+        {% for item in recipe.ingredients|split_ingredients %}
+        <li><span class="text-success fw-bold">•</span> {{ item }}</li>
+        {% empty %}
+        <li class="text-muted">No ingredients listed.</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</div>
 
-          <button type="submit" class="btn btn-success w-100 rounded-pill" onclick="return validateRating()">
-  Submit
-</button>
-        </form>
-      </div>
-      {% else %}
-      <a href="{% url 'login' %}?next={{ request.path }}" class="btn btn-outline-success w-100 mb-4 rounded-pill">Login
-        to rate this recipe</a>
-      {% endif %}
+<!-- Ratings & Reviews -->
+<div class="row g-4 my-1">
+  <div class="col-lg-8 mx-auto">
+    <!-- Rating Form -->
+    {% if user.is_authenticated %}
+    <div class="card shadow-sm border-0 p-4 mb-4 rounded-4">
+      <form action="{% url 'submit_rating' recipe.id %}" method="post">
+        {% csrf_token %}
+        <h5 class="fw-bold gradient-text mb-3">⭐ Rate this Recipe</h5>
 
-      <!-- Reviews -->
-      <div class="card shadow-sm border-0 p-4 rounded-4">
-        <h5 class="fw-bold gradient-text mb-3">💬 Reviews</h5>
-        <div class="reviews">
-          {% for rating in recipe.ratings.all %}
-          <div class="p-3 mb-3 rounded review-item">
-            <div class="d-flex justify-content-between align-items-center mb-2">
-              <strong>{{ rating.user.username }}</strong>
-              <span class="text-warning">
-                {% for i in 1|to:5 %}
-                {% if i <= rating.rating %} <i class="bi bi-star-fill"></i>
-                  {% else %}
-                  <i class="bi bi-star"></i>
-                  {% endif %}
-                  {% endfor %}
-              </span>
-            </div>
-            <p class="mb-0">{{ rating.comment|default:"<em class='text-muted'>No comment</em>"|safe }}</p>
-          </div>
-          {% empty %}
-          <p class="text-muted">No reviews yet.</p>
+        <div class="mb-3">
+          {% for i in 1|to:5 %}
+          <i class="bi bi-star rating-star {% if user_rating and user_rating.rating >= i %}active{% endif %}"
+            data-value="{{ i }}"></i>
           {% endfor %}
         </div>
+        <input type="hidden" name="score" id="ratingScore"
+          value="{% if user_rating %}{{ user_rating.rating }}{% endif %}">
+
+        <div class="mb-3">
+          <label class="form-label fw-semibold">💬 Comment:</label>
+          <textarea name="comment" rows="3" class="form-control rounded-3"
+            placeholder="Write your review...">{% if user_rating %}{{ user_rating.comment }}{% endif %}</textarea>
+        </div>
+
+        <button type="submit" class="btn btn-success w-100 rounded-pill" onclick="return validateRating()">
+          Submit
+        </button>
+      </form>
+    </div>
+    {% else %}
+    <a href="{% url 'login' %}?next={{ request.path }}" class="btn btn-outline-success w-100 mb-4 rounded-pill">Login
+      to rate this recipe</a>
+    {% endif %}
+
+    <!-- Reviews -->
+    <div class="card shadow-sm border-0 p-4 rounded-4">
+      <h5 class="fw-bold gradient-text mb-3">💬 Reviews</h5>
+      <div class="reviews">
+        {% for rating in recipe.ratings.all %}
+        <div class="p-3 mb-3 rounded review-item">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <strong>{{ rating.user.username }}</strong>
+            <span class="text-warning">
+              {% for i in 1|to:5 %}
+              {% if i <= rating.rating %} <i class="bi bi-star-fill"></i>
+                {% else %}
+                <i class="bi bi-star"></i>
+                {% endif %}
+                {% endfor %}
+            </span>
+          </div>
+          <p class="mb-0">{{ rating.comment|default:"<em class='text-muted'>No comment</em>"|safe }}</p>
+        </div>
+        {% empty %}
+        <p class="text-muted">No reviews yet.</p>
+        {% endfor %}
       </div>
     </div>
   </div>
+</div>
 </div>
 
 <style>
@@ -223,10 +228,10 @@ Login to save ❤️ </a>
     transition: color 0.2s;
   }
 
-.rating-star.active,
-.rating-star:hover {
-  color: #ffc107;
-}
+  .rating-star.active,
+  .rating-star:hover {
+    color: #ffc107;
+  }
 
   .instructions-text {
     white-space: pre-line;
@@ -237,19 +242,21 @@ Login to save ❤️ </a>
 
 
   /* 🔥 FIX RECIPE DETAIL IMAGE */
-.recipe-img-wrapper {
-  width: 100%;
-  height: 405px;          /* perfect balanced height */
-  overflow: hidden;
-  border-radius: 12px;
-  margin-top: 8px;
-}
+  .recipe-img-wrapper {
+    width: 100%;
+    height: 405px;
+    /* perfect balanced height */
+    overflow: hidden;
+    border-radius: 12px;
+    margin-top: 8px;
+  }
 
-.recipe-img-wrapper img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;      /* prevents stretching */
-}
+  .recipe-img-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* prevents stretching */
+  }
 
 
   @media (max-width: 768px) {
@@ -261,61 +268,61 @@ Login to save ❤️ </a>
     .card {
       margin-bottom: 1.2rem;
     }
-  .recipe-img-wrapper {
-    height: 220px;
+
+    .recipe-img-wrapper {
+      height: 220px;
+    }
   }
-  }
-  
 </style>
 <script>
-document.addEventListener("DOMContentLoaded", () => {
-  const stars = document.querySelectorAll(".rating-star");
-  const ratingInput = document.getElementById("ratingScore");
+  document.addEventListener("DOMContentLoaded", () => {
+    const stars = document.querySelectorAll(".rating-star");
+    const ratingInput = document.getElementById("ratingScore");
 
-  let selectedRating = parseInt(ratingInput.value) || 0;
+    let selectedRating = parseInt(ratingInput.value) || 0;
 
-  // ✅ Set initial state (for edit case)
-  highlightStars(selectedRating);
+    // ✅ Set initial state (for edit case)
+    highlightStars(selectedRating);
 
-  stars.forEach((star, index) => {
-    const value = index + 1;
+    stars.forEach((star, index) => {
+      const value = index + 1;
 
-    // ⭐ Hover effect
-    star.addEventListener("mouseover", () => {
-      highlightStars(value);
+      // ⭐ Hover effect
+      star.addEventListener("mouseover", () => {
+        highlightStars(value);
+      });
+
+      // ⭐ Reset on mouse leave
+      star.addEventListener("mouseout", () => {
+        highlightStars(selectedRating);
+      });
+
+      // ⭐ Click to select
+      star.addEventListener("click", () => {
+        selectedRating = value;
+        ratingInput.value = value;
+        highlightStars(value);
+      });
     });
 
-    // ⭐ Reset on mouse leave
-    star.addEventListener("mouseout", () => {
-      highlightStars(selectedRating);
-    });
-
-    // ⭐ Click to select
-    star.addEventListener("click", () => {
-      selectedRating = value;
-      ratingInput.value = value;
-      highlightStars(value);
-    });
+    function highlightStars(rating) {
+      stars.forEach((s, i) => {
+        s.classList.toggle("active", i < rating);
+      });
+    }
   });
 
-  function highlightStars(rating) {
-    stars.forEach((s, i) => {
-      s.classList.toggle("active", i < rating);
-    });
+  // ✅ FORM VALIDATION (VERY IMPORTANT)
+  function validateRating() {
+    const rating = document.getElementById("ratingScore").value;
+
+    if (!rating || rating == "0") {
+      alert("⚠ Please select a rating (1–5 stars)");
+      return false; // stop form submit
+    }
+
+    return true;
   }
-});
-
-// ✅ FORM VALIDATION (VERY IMPORTANT)
-function validateRating() {
-  const rating = document.getElementById("ratingScore").value;
-
-  if (!rating || rating == "0") {
-    alert("⚠ Please select a rating (1–5 stars)");
-    return false; // stop form submit
-  }
-
-  return true;
-}
 </script>
 
 {% endblock %}

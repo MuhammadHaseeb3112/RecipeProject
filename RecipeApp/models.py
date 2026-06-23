@@ -78,8 +78,11 @@ class Recipe(models.Model):
             models.Index(fields=['-views']),
         ]
 
+    @property
     def total_time(self):
-        return self.prep_time + (self.cook_time or 0)
+        prep = self.prep_time or 0
+        cook = self.cook_time or 0
+        return prep + cook
 
     def __str__(self):
         return f"{self.title} ({self.category})" if self.category else self.title

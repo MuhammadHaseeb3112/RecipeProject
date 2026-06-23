@@ -4,24 +4,24 @@
 {% block content %}
 
 <style>
-/* 🔥 FIX IMAGE SIZE (CONSISTENT CARDS) */
-.recipe-img-wrapper {
-  width: 100%;
-  height: 300px;
-  overflow: hidden;
-  border-radius: 12px 12px 0 0;
-}
+  /* 🔥 FIX IMAGE SIZE (CONSISTENT CARDS) */
+  .recipe-img-wrapper {
+    width: 100%;
+    height: 300px;
+    overflow: hidden;
+    border-radius: 12px 12px 0 0;
+  }
 
-.recipe-img-wrapper img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
+  .recipe-img-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
 
-/* Clean card look */
-.card {
-  border-radius: 12px;
-}
+  /* Clean card look */
+  .card {
+    border-radius: 12px;
+  }
 </style>
 
 <div class="container py-5">
@@ -33,32 +33,38 @@
       <div class="card shadow-sm border-0 h-100">
 
 
-    <!-- ✅ FIXED IMAGE -->
-    <div class="recipe-img-wrapper">
-      {% if recipe.image %}
-      <img src="{{ recipe.image.url }}" alt="{{ recipe.title }}">
-      {% else %}
-      <img src="https://via.placeholder.com/400x200?text=No+Image">
-      {% endif %}
-    </div>
+        <!-- ✅ FIXED IMAGE -->
+        <div class="recipe-img-wrapper">
+          {% if recipe.image %}
+          <div class="recipe-img-wrapper">
+            {% if recipe.image %}
+            <img src="{{ recipe.image.url }}" alt="{{ recipe.title }}">
+            {% else %}
+            <img src="https://placehold.co/800x500?text=Recipe+Image" alt="No Image Available">
+            {% endif %}
+          </div>
+          {% else %}
+          <img src="https://via.placeholder.com/400x200?text=No+Image">
+          {% endif %}
+        </div>
 
-    <div class="card-body d-flex flex-column">
-      <h5 class="card-title">{{ recipe.title }}</h5>
-      <p class="card-text text-muted">{{ recipe.category }}</p>
+        <div class="card-body d-flex flex-column">
+          <h5 class="card-title">{{ recipe.title }}</h5>
+          <p class="card-text text-muted">{{ recipe.category }}</p>
 
-      <div class="mt-auto">
-        <a href="{% url 'recipe_detail' recipe.id %}" class="btn btn-sm btn-dark rounded-pill">View</a>
-        <a href="{% url 'edit_recipe' recipe.id %}" class="btn btn-sm btn-warning rounded-pill">Edit</a>
-        <a href="{% url 'delete_recipe' recipe.id %}" class="btn btn-sm btn-danger rounded-pill">Delete</a>
+          <div class="mt-auto">
+            <a href="{% url 'recipe_detail' recipe.id %}" class="btn btn-sm btn-dark rounded-pill">View</a>
+            <a href="{% url 'edit_recipe' recipe.id %}" class="btn btn-sm btn-warning rounded-pill">Edit</a>
+            <a href="{% url 'delete_recipe' recipe.id %}" class="btn btn-sm btn-danger rounded-pill">Delete</a>
+          </div>
+        </div>
+
       </div>
     </div>
 
-  </div>
-</div>
-
-{% empty %}
-<p class="text-muted">You haven’t added any recipes yet.</p>
-{% endfor %}
+    {% empty %}
+    <p class="text-muted">You haven’t added any recipes yet.</p>
+    {% endfor %}
 
 
   </div>
